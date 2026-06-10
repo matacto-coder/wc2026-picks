@@ -306,6 +306,27 @@ function score(pl) {
   return {cor,tot,picks:Object.keys(S.picks[pl]||{}).length};
 }
 
+// ── TIME CONVERSION ──────────────────────────────────────────────
+function toBST(dateStr) {
+  if (!dateStr) return '';
+  try {
+    const m = dateStr.match(/(\d+):(\d+)\s*(AM|PM)/i);
+    if (!m) return '';
+    let hours = parseInt(m[1]);
+    const mins = m[2];
+    const ampm = m[3].toUpperCase();
+    if (ampm === 'PM' && hours !== 12) hours += 12;
+    if (ampm === 'AM' && hours === 12) hours = 0;
+    // ET to BST = +5 hours
+    hours += 5;
+    let day = '';
+    if (hours >= 24) { hours -= 24; day = ' (+1)'; }
+    const bstAmpm = hours >= 12 ? 'PM' : 'AM';
+    const bstHours = hours > 12 ? hours - 12 : hours === 0 ? 12 : hours;
+    return `${bstHours}:${mins} ${bstAmpm}${day}`;
+  } catch(e) { return ''; }
+}
+
 // ── KICKOFF LOCK ─────────────────────────────────────────────────
 // Parse "Jun 12, 9:00 PM ET" -> Date object in ET
 function kickoffTime(dateStr) {
@@ -378,7 +399,7 @@ function matchCard(m, showGroup=false) {
   return `<div class="${cls}">
     <div class="match-left">
       <div class="match-teams"><span class="team">${homeName}</span><span class="vs">VS</span><span class="team right">${awayName}</span></div>
-      <div class="match-date">${showGroup ? `<span style="background:var(--surface2);border:1px solid var(--border);border-radius:4px;padding:1px 7px;font-size:10px;font-weight:700;margin-right:6px;color:var(--text)">GRP ${m.g}</span>` : `<span style="color:var(--accent);font-weight:700;margin-right:6px">M${m.num}</span>`}📅 ${m.date}${locked?' 🔒':''}</div>
+      <div class="match-date">${showGroup ? `<span style="background:var(--surface2);border:1px solid var(--border);border-radius:4px;padding:1px 7px;font-size:10px;font-weight:700;margin-right:6px;color:var(--text)">GRP ${m.g}</span>` : `<span style="color:var(--accent);font-weight:700;margin-right:6px">M${m.num}</span>`}📅 ${m.date} <span style="color:var(--muted);font-size:10px">(${toBST(m.date)} BST)</span>${locked?' 🔒':''}</div>
       ${koNameEditors}
     </div>
     ${pickSection}
