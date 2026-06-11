@@ -570,7 +570,7 @@ function renderVersus() {
     return `<div style="background:var(--surface);border:1px solid var(--border);${rowBg}border-radius:9px;padding:10px 14px;margin-bottom:7px;display:grid;grid-template-columns:1fr auto auto auto;align-items:center;gap:12px;">
       <div>
         <div style="font-weight:600;font-size:13px">${m.home} <span style="color:var(--muted)">vs</span> ${m.away}</div>
-        <div style="font-size:11px;color:var(--muted);margin-top:2px"><span style="background:var(--surface2);border:1px solid var(--border);border-radius:4px;padding:1px 6px;font-weight:700;margin-right:5px">GRP ${m.g}</span>${m.date}</div>
+        <div style="font-size:11px;color:var(--muted);margin-top:2px"><span style="background:var(--surface2);border:1px solid var(--border);border-radius:4px;padding:1px 6px;font-weight:700;margin-right:5px">GRP ${m.g}</span>${m.date}${res?.winner ? ` <span style="background:var(--surface2);border:1px solid var(--border);border-radius:4px;padding:1px 8px;margin-left:6px;font-weight:700;color:var(--text)">${res.home} – ${res.away}</span>` : ''}</div>
       </div>
       <div style="text-align:center;min-width:70px">
         <div style="font-size:10px;color:var(--muted);margin-bottom:3px;text-transform:uppercase;letter-spacing:.5px">${p1name}</div>
