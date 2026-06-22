@@ -547,7 +547,23 @@ function renderVersus() {
   const groupMatches = MATCHES.filter(m => !KO.has(m.g));
   const p1name = S.names.p1, p2name = S.names.p2;
 
-  const rows = groupMatches.map(m => {
+  // Sort by date
+  const sorted = [...groupMatches].sort((a,b) => a.num - b.num);
+
+  // Group by date for headers
+  const byDate = {};
+  for (const m of sorted) {
+    const dateKey = m.date.split(',')[0];
+    if (!byDate[dateKey]) byDate[dateKey] = [];
+    byDate[dateKey].push(m);
+  }
+  const monthOrder = {Jan:1,Feb:2,Mar:3,Apr:4,May:5,Jun:6,Jul:7,Aug:8,Sep:9,Oct:10,Nov:11,Dec:12};
+  const sortedDates = Object.keys(byDate).sort((a,b) => {
+    const [am,ad]=a.split(' '); const [bm,bd]=b.split(' ');
+    return (monthOrder[am]*100+parseInt(ad))-(monthOrder[bm]*100+parseInt(bd));
+  });
+
+  const rows = sorted.map(m => {
     const p1pick = S.picks.p1?.[m.id];
     const p2pick = S.picks.p2?.[m.id];
     const res = S.results[m.id];
@@ -594,6 +610,10 @@ function renderVersus() {
   const agreed = bothPicked.filter(m => S.picks.p1[m.id] === S.picks.p2[m.id]);
   const disagreed = bothPicked.length - agreed.length;
 
+  const rowsByDate = {};
+  sorted.forEach((m,i) => { const dk=m.date.split(',')[0]; if(!rowsByDate[dk])rowsByDate[dk]=[]; rowsByDate[dk].push(rows[i]); });
+  const dateHtml = sortedDates.map(d => `<div class="group-title">${d}</div>${rowsByDate[d].join('')}`).join('');
+
   return `
     <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:18px;">
       <div style="background:var(--surface);border-radius:10px;padding:14px;text-align:center;border:1px solid var(--border);">
@@ -609,7 +629,7 @@ function renderVersus() {
         <div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px">Disagree ✗</div>
       </div>
     </div>
-    ${rows.join('')}`;
+    ${dateHtml}`;
 }
 
 window.render = function() {
