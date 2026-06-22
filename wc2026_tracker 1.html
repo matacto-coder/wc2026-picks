@@ -379,9 +379,9 @@ function matchCard(m, showGroup=false) {
   // KO team name editors (admin only)
   const koNameEditors = (isKO && S.admin)
     ? `<div style="display:flex;gap:6px;margin-top:6px;align-items:center;">
-        <input style="flex:1;background:var(--surface2);border:1px solid var(--accent);border-radius:4px;color:var(--text);padding:3px 7px;font-size:11px;font-family:'DM Sans',sans-serif;" placeholder="${m.home}" value="${homeName!==m.home?homeName:''}" oninput="window._setKOTeam('${m.id}','home',this.value||'${m.home}')">
+        <input style="flex:1;background:var(--surface2);border:1px solid var(--accent);border-radius:4px;color:var(--text);padding:3px 7px;font-size:11px;font-family:'DM Sans',sans-serif;" placeholder="${m.home}" value="${homeName!==m.home?homeName:''}" onchange="window._setKOTeam('${m.id}','home',this.value||'${m.home}')" onblur="window._setKOTeam('${m.id}','home',this.value||'${m.home}')">
         <span style="color:var(--muted);font-size:10px;">VS</span>
-        <input style="flex:1;background:var(--surface2);border:1px solid var(--accent);border-radius:4px;color:var(--text);padding:3px 7px;font-size:11px;font-family:'DM Sans',sans-serif;" placeholder="${m.away}" value="${awayName!==m.away?awayName:''}" oninput="window._setKOTeam('${m.id}','away',this.value||'${m.away}')">
+        <input style="flex:1;background:var(--surface2);border:1px solid var(--accent);border-radius:4px;color:var(--text);padding:3px 7px;font-size:11px;font-family:'DM Sans',sans-serif;" placeholder="${m.away}" value="${awayName!==m.away?awayName:''}" onchange="window._setKOTeam('${m.id}','away',this.value||'${m.away}')" onblur="window._setKOTeam('${m.id}','away',this.value||'${m.away}')">
        </div>`
     : '';
 
@@ -390,11 +390,16 @@ function matchCard(m, showGroup=false) {
         <span style="font-size:16px">🔒</span>
         ${pick ? `<span style="font-size:12px;font-weight:700;color:var(--muted)">Picked: <span style="color:var(--text)">${pick.toUpperCase()}</span></span>` : `<span style="font-size:12px;color:var(--muted)">No pick</span>`}
        </div>`
-    : `<div class="picks">
-        <button class="${bc('home')}" onclick="window._pick('${m.id}','home')">${hs}</button>
-        <button class="${bc('draw')}" onclick="window._pick('${m.id}','draw')">Draw</button>
-        <button class="${bc('away')}" onclick="window._pick('${m.id}','away')">${as}</button>
-       </div>`;
+    : isKO
+      ? `<div class="picks">
+          <button class="${bc('home')}" onclick="window._pick('${m.id}','home')">${hs}</button>
+          <button class="${bc('away')}" onclick="window._pick('${m.id}','away')">${as}</button>
+         </div>`
+      : `<div class="picks">
+          <button class="${bc('home')}" onclick="window._pick('${m.id}','home')">${hs}</button>
+          <button class="${bc('draw')}" onclick="window._pick('${m.id}','draw')">Draw</button>
+          <button class="${bc('away')}" onclick="window._pick('${m.id}','away')">${as}</button>
+         </div>`;
 
   return `<div class="${cls}">
     <div class="match-left">
